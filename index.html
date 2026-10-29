@@ -1,1 +1,1866 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Inventori Kafe</title>
 
+<style>
+:root {
+    --navy: #172554;
+    --blue: #2563eb;
+    --green: #16a34a;
+    --red: #dc2626;
+    --bg: #f3f6fb;
+    --white: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #e2e8f0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+button, input, select, textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.app {
+    min-height: 100vh;
+    display: flex;
+}
+
+/* MENU SEBELAH KIRI */
+
+.sidebar {
+    width: 245px;
+    background: var(--navy);
+    color: white;
+    padding: 26px 16px;
+    flex-shrink: 0;
+}
+
+.brand {
+    font-size: 21px;
+    font-weight: 800;
+    margin: 0 10px 6px;
+}
+
+.brand-subtitle {
+    color: #cbd5e1;
+    font-size: 12px;
+    margin: 0 10px 35px;
+}
+
+.menu-label {
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1.2px;
+    margin: 20px 10px 10px;
+}
+
+.nav-button {
+    width: 100%;
+    display: block;
+    text-align: left;
+    color: #dbeafe;
+    background: transparent;
+    border: 0;
+    border-radius: 9px;
+    padding: 13px 12px;
+    margin-bottom: 6px;
+}
+
+.nav-button:hover,
+.nav-button.active {
+    background: #2b3d70;
+    color: white;
+}
+
+.sidebar-note {
+    margin: 40px 8px 0;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #cbd5e1;
+}
+
+/* KANDUNGAN UTAMA */
+
+.main {
+    flex: 1;
+    min-width: 0;
+    padding: 28px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 28px;
+}
+
+.topbar h1 {
+    font-size: 27px;
+    margin: 0 0 8px;
+}
+
+.subtitle {
+    color: var(--muted);
+    margin: 0;
+    font-size: 14px;
+}
+
+.date-label {
+    color: var(--muted);
+    font-size: 13px;
+    text-align: right;
+}
+
+.primary-button {
+    background: var(--blue);
+    color: white;
+    border: 0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-weight: bold;
+}
+
+.primary-button:hover {
+    background: #1d4ed8;
+}
+
+.secondary-button {
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 10px 14px;
+}
+
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* KAD RINGKASAN */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17px;
+    margin-bottom: 22px;
+}
+
+.summary-card,
+.panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.025);
+}
+
+.summary-card {
+    padding: 21px;
+}
+
+.summary-title {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 14px;
+}
+
+.summary-number {
+    font-size: 29px;
+    font-weight: 800;
+    margin-bottom: 7px;
+    overflow-wrap: anywhere;
+}
+
+.summary-description {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.blue-text {
+    color: var(--blue);
+}
+
+.green-text {
+    color: var(--green);
+}
+
+.red-text {
+    color: var(--red);
+}
+
+/* PANEL DAN GRAF */
+
+.content-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(260px, 1fr);
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.panel {
+    padding: 22px;
+    min-width: 0;
+    margin-bottom: 22px;
+}
+
+.content-grid .panel {
+    margin-bottom: 0;
+}
+
+.panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.panel h2 {
+    font-size: 17px;
+    margin: 0 0 7px;
+}
+
+.panel-description {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 13px;
+    color: var(--muted);
+    font-size: 12px;
+    margin: 12px 0;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 280px;
+}
+
+#stockChart {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.category-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.category-name {
+    font-weight: bold;
+}
+
+.category-quantity {
+    color: var(--muted);
+}
+
+.progress-track {
+    height: 8px;
+    background: #e9eef6;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--blue);
+    border-radius: 20px;
+    transition: width 0.2s;
+}
+
+.category-empty {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* JADUAL */
+
+.table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 17px;
+}
+
+.table-toolbar h2 {
+    margin: 0;
+}
+
+.search-input {
+    width: 230px;
+    max-width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: white;
+}
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+th {
+    text-align: left;
+    background: #f8fafc;
+    color: var(--muted);
+    font-weight: bold;
+    padding: 13px 12px;
+}
+
+td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #edf1f7;
+}
+
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.badge {
+    display: inline-block;
+    border-radius: 20px;
+    padding: 5px 9px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.badge-in {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-out {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.empty-cell {
+    color: var(--muted);
+    text-align: center;
+    padding: 28px 12px;
+}
+
+.section-hidden {
+    display: none !important;
+}
+
+.section-heading {
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    margin: 0 0 8px;
+}
+
+.section-heading p {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* BORANG */
+
+.form-panel {
+    max-width: 720px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: white;
+}
+
+.form-group textarea {
+    min-height: 85px;
+    resize: vertical;
+}
+
+.form-help {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.form-actions {
+    margin-top: 22px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.message {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.message-success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.message-error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 8px 0 20px;
+}
+
+/* PAPARAN TELEFON */
+
+@media (max-width: 1100px) {
+    .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .app {
+        display: block;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 17px 13px;
+    }
+
+    .brand-subtitle {
+        margin-bottom: 15px;
+    }
+
+    .menu-label {
+        margin-top: 14px;
+    }
+
+    .sidebar nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 5px;
+    }
+
+    .nav-button {
+        margin: 0;
+        font-size: 12px;
+        padding: 11px 9px;
+    }
+
+    .sidebar-note {
+        margin-top: 15px;
+    }
+
+    .main {
+        padding: 17px 12px;
+    }
+
+    .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .topbar h1 {
+        font-size: 23px;
+    }
+
+    .date-label {
+        text-align: left;
+    }
+
+    .summary-grid {
+        gap: 10px;
+    }
+
+    .summary-card {
+        padding: 15px;
+    }
+
+    .summary-number {
+        font-size: 24px;
+    }
+
+    .panel {
+        padding: 16px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full {
+        grid-column: auto;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+
+    .chart-wrap {
+        height: 245px;
+    }
+}
+
+/* CETAK LAPORAN */
+
+@media print {
+    body {
+        background: white;
+    }
+
+    .sidebar,
+    .no-print,
+    #entrySection,
+    footer {
+        display: none !important;
+    }
+
+    .app {
+        display: block;
+    }
+
+    .main {
+        padding: 0;
+    }
+
+    .panel,
+    .summary-card {
+        box-shadow: none;
+        break-inside: avoid;
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .table-wrap {
+        overflow: visible;
+    }
+
+    table {
+        white-space: normal;
+        font-size: 10px;
+    }
+
+    th, td {
+        padding: 7px 5px;
+    }
+
+    .section-hidden {
+        display: block !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+        <div class="brand">☕ BREWCOUNT</div>
+        <div class="brand-subtitle">Sistem Inventori Kafe</div>
+
+        <div class="menu-label">MENU UTAMA</div>
+
+        <nav>
+            <button class="nav-button active" data-view="dashboard">
+                ▦ &nbsp; Dashboard
+            </button>
+
+            <button class="nav-button" data-view="entry">
+                ＋ &nbsp; Tambah Stok
+            </button>
+
+            <button class="nav-button" data-view="stockIn">
+                ↙ &nbsp; Stok Masuk
+            </button>
+
+            <button class="nav-button" data-view="stockOut">
+                ↗ &nbsp; Stok Keluar
+            </button>
+
+            <button class="nav-button" data-view="report">
+                ▤ &nbsp; Jana Laporan
+            </button>
+        </nav>
+
+        <div class="sidebar-note">
+            Dashboard Pengurusan Inventori<br>
+            Rekod pergerakan stok kafe.
+        </div>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1 id="pageTitle">Dashboard Inventori</h1>
+                <p class="subtitle" id="pageSubtitle">
+                    Ringkasan pergerakan stok kafe anda.
+                </p>
+            </div>
+
+            <div>
+                <div class="date-label" id="todayDate"></div>
+                <div class="button-row no-print" style="margin-top:12px">
+                    <button class="primary-button" id="topAddButton">
+                        + Tambah Stok
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD -->
+
+        <section id="dashboardSection">
+
+            <div class="summary-grid">
+
+                <article class="summary-card">
+                    <div class="summary-title">Jumlah Stok Masuk</div>
+                    <div class="summary-number blue-text" id="totalIn">0</div>
+                    <div class="summary-description">Kuantiti keseluruhan direkodkan</div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-title">Jumlah Stok Keluar</div>
+                    <div class="summary-number red-text" id="totalOut">0</div>
+                    <div class="summary-description">Kuantiti keseluruhan direkodkan</div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-title">Jenis Barang</div>
+                    <div class="summary-number" id="totalItems">0</div>
+                    <div class="summary-description">Barang unik dalam rekod</div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-title">Kategori Stok Masuk</div>
+                    <div class="summary-number green-text" id="totalCategories">0</div>
+                    <div class="summary-description">Kategori yang mempunyai rekod masuk</div>
+                </article>
+
+            </div>
+
+            <div class="content-grid">
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h2>Perbandingan Stok Masuk dan Stok Keluar Bulanan</h2>
+                            <p class="panel-description">
+                                Perbandingan kuantiti pergerakan stok bagi enam bulan terkini.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="legend">
+                        <span class="legend-item">
+                            <span class="legend-dot" style="background:#2563eb"></span>
+                            Stok Masuk
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-dot" style="background:#f97316"></span>
+                            Stok Keluar
+                        </span>
+                    </div>
+
+                    <div class="chart-wrap">
+                        <canvas id="stockChart"
+                            role="img"
+                            aria-label="Graf perbandingan stok masuk dan stok keluar bulanan">
+                        </canvas>
+                    </div>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h2>Kategori Stok Masuk</h2>
+                            <p class="panel-description">
+                                Jumlah kuantiti barang diterima mengikut kategori.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="category-list" id="categoryList"></div>
+                </section>
+
+            </div>
+
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2>Rekod Stok Terkini</h2>
+                        <p class="panel-description">
+                            Pergerakan inventori yang direkodkan baru-baru ini.
+                        </p>
+                    </div>
+
+                    <button class="secondary-button no-print" id="viewAllButton">
+                        Lihat Semua
+                    </button>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tarikh</th>
+                                <th>Nama Barang</th>
+                                <th>Kategori</th>
+                                <th>Jenis</th>
+                                <th>Kuantiti</th>
+                                <th>Catatan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+        </section>
+
+        <!-- BORANG TAMBAH STOK -->
+
+        <section id="entrySection" class="section-hidden">
+
+            <div class="section-heading">
+                <h2>Tambah Stok / Rekod Pergerakan</h2>
+                <p>Isi maklumat barang dan pilih jenis pergerakan stok.</p>
+            </div>
+
+            <section class="panel form-panel">
+
+                <form id="stockForm">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="productName">Nama Barang *</label>
+                            <input
+                                id="productName"
+                                type="text"
+                                maxlength="100"
+                                placeholder="Contoh: Biji Kopi Arabica"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Kategori Barang *</label>
+                            <select id="category" required>
+                                <option value="">Pilih kategori</option>
+                                <option value="Bahan Mentah">Bahan Mentah</option>
+                                <option value="Minuman">Minuman</option>
+                                <option value="Pembungkusan">Pembungkusan</option>
+                                <option value="Dairy">Produk Tenusu</option>
+                                <option value="Pembersihan">Pembersihan</option>
+                                <option value="Peralatan">Peralatan</option>
+                                <option value="Lain-lain">Lain-lain</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="movementType">Jenis Pergerakan *</label>
+                            <select id="movementType" required>
+                                <option value="IN">Stok Masuk</option>
+                                <option value="OUT">Stok Keluar</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quantity">Kuantiti *</label>
+                            <input
+                                id="quantity"
+                                type="number"
+                                min="0.01"
+                                max="1000000000"
+                                step="0.01"
+                                placeholder="Contoh: 10"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="unit">Unit Pengukuran *</label>
+                            <select id="unit" required>
+                                <option value="unit">Unit</option>
+                                <option value="kg">Kilogram (kg)</option>
+                                <option value="g">Gram (g)</option>
+                                <option value="liter">Liter</option>
+                                <option value="ml">Mililiter (ml)</option>
+                                <option value="kotak">Kotak</option>
+                                <option value="pek">Pek</option>
+                                <option value="botol">Botol</option>
+                                <option value="bungkus">Bungkus</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="movementDate">Tarikh *</label>
+                            <input id="movementDate" type="date" required>
+                        </div>
+
+                        <div class="form-group full">
+                            <label for="notes">Catatan</label>
+                            <textarea
+                                id="notes"
+                                maxlength="500"
+                                placeholder="Contoh: Pembelian daripada pembekal atau penggunaan operasi kafe"></textarea>
+                        </div>
+
+                    </div>
+
+                    <p class="form-help">
+                        Jika barang belum pernah direkodkan, sistem akan mencipta
+                        rekod barang tersebut. Stok keluar tidak boleh melebihi
+                        baki yang tersedia dalam prototaip ini.
+                    </p>
+
+                    <div class="form-actions">
+                        <button class="primary-button" type="submit">
+                            Simpan Rekod
+                        </button>
+
+                        <button class="secondary-button" type="reset">
+                            Kosongkan Borang
+                        </button>
+                    </div>
+
+                    <div id="formMessage" aria-live="polite"></div>
+
+                </form>
+            </section>
+
+        </section>
+
+        <!-- SENARAI STOK MASUK DAN STOK KELUAR -->
+
+        <section id="stockInSection" class="section-hidden">
+            <section class="panel">
+                <div class="table-toolbar">
+                    <div>
+                        <h2>Rekod Stok Masuk</h2>
+                        <p class="panel-description">
+                            Semua rekod barang yang diterima.
+                        </p>
+                    </div>
+
+                    <input
+                        class="search-input"
+                        id="searchIn"
+                        type="search"
+                        placeholder="Cari nama atau kategori..."
+                        aria-label="Cari rekod stok masuk">
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tarikh</th>
+                                <th>Nama Barang</th>
+                                <th>Kategori</th>
+                                <th>Kuantiti</th>
+                                <th>Unit</th>
+                                <th>Catatan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockInTable"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+        <section id="stockOutSection" class="section-hidden">
+            <section class="panel">
+                <div class="table-toolbar">
+                    <div>
+                        <h2>Rekod Stok Keluar</h2>
+                        <p class="panel-description">
+                            Semua rekod barang yang digunakan atau dikeluarkan.
+                        </p>
+                    </div>
+
+                    <input
+                        class="search-input"
+                        id="searchOut"
+                        type="search"
+                        placeholder="Cari nama atau kategori..."
+                        aria-label="Cari rekod stok keluar">
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tarikh</th>
+                                <th>Nama Barang</th>
+                                <th>Kategori</th>
+                                <th>Kuantiti</th>
+                                <th>Unit</th>
+                                <th>Catatan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockOutTable"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+        <!-- LAPORAN -->
+
+        <section id="reportSection" class="section-hidden">
+
+            <div class="section-heading">
+                <h2>Laporan Inventori</h2>
+                <p>
+                    Ringkasan pergerakan stok berdasarkan semua rekod yang tersimpan
+                    dalam pelayar ini.
+                </p>
+
+                <div class="button-row no-print">
+                    <button class="primary-button" id="printReport">
+                        Cetak / Simpan PDF
+                    </button>
+                    <button class="secondary-button" id="exportCsv">
+                        Eksport CSV
+                    </button>
+                </div>
+            </div>
+
+            <div class="summary-grid">
+                <article class="summary-card">
+                    <div class="summary-title">Jumlah Stok Masuk</div>
+                    <div class="summary-number blue-text" id="reportIn">0</div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-title">Jumlah Stok Keluar</div>
+                    <div class="summary-number red-text" id="reportOut">0</div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-title">Jumlah Rekod</div>
+                    <div class="summary-number" id="reportCount">0</div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-title">Jenis Barang</div>
+                    <div class="summary-number green-text" id="reportItems">0</div>
+                </article>
+            </div>
+
+            <section class="panel">
+                <h2>Butiran Pergerakan Inventori</h2>
+                <p class="panel-description" style="margin:8px 0 18px">
+                    Senarai lengkap transaksi stok masuk dan stok keluar.
+                </p>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tarikh</th>
+                                <th>Nama Barang</th>
+                                <th>Kategori</th>
+                                <th>Jenis</th>
+                                <th>Kuantiti</th>
+                                <th>Unit</th>
+                                <th>Catatan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTable"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+        <footer>
+            Sistem Inventori Kafe · Prototaip GitHub
+        </footer>
+
+    </main>
+</div>
+
+<script>
+"use strict";
+
+/*
+ * PROTOTAIP SAHAJA.
+ * Data disimpan dalam localStorage pelayar ini.
+ * Ia belum menggunakan pangkalan data bersama.
+ */
+
+const STORAGE_KEY = "brewcount_inventory_v1";
+
+const $ = id => document.getElementById(id);
+
+const viewNames = {
+    dashboard: [
+        "Dashboard Inventori",
+        "Ringkasan pergerakan stok kafe anda."
+    ],
+    entry: [
+        "Tambah Stok",
+        "Tambah barang dan rekod pergerakan inventori."
+    ],
+    stockIn: [
+        "Stok Masuk",
+        "Rekod barang yang diterima oleh kafe."
+    ],
+    stockOut: [
+        "Stok Keluar",
+        "Rekod barang yang digunakan atau dikeluarkan."
+    ],
+    report: [
+        "Laporan Inventori",
+        "Ringkasan dan eksport rekod inventori."
+    ]
+};
+
+let currentView = "dashboard";
+let inventory = loadInventory();
+
+function todayISO() {
+    const now = new Date();
+    const local = new Date(
+        now.getTime() - now.getTimezoneOffset() * 60000
+    );
+    return local.toISOString().slice(0, 10);
+}
+
+function dateOffset(days) {
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    const local = new Date(
+        d.getTime() - d.getTimezoneOffset() * 60000
+    );
+    return local.toISOString().slice(0, 10);
+}
+
+function makeId() {
+    if (window.crypto && typeof window.crypto.randomUUID === "function") {
+        return window.crypto.randomUUID();
+    }
+
+    return Date.now().toString(36) +
+        Math.random().toString(36).slice(2);
+}
+
+function loadInventory() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+
+        if (saved !== null) {
+            const parsed = JSON.parse(saved);
+
+            if (Array.isArray(parsed)) {
+                return parsed;
+            }
+        }
+    } catch (error) {
+        console.error("Gagal membaca data inventori:", error);
+    }
+
+    // Data contoh untuk demonstrasi pertama.
+    const sample = [
+        {
+            id: makeId(),
+            name: "Biji Kopi Arabica",
+            category: "Bahan Mentah",
+            unit: "kg",
+            type: "IN",
+            quantity: 20,
+            date: dateOffset(-150),
+            notes: "Stok awal demonstrasi"
+        },
+        {
+            id: makeId(),
+            name: "Susu Segar",
+            category: "Dairy",
+            unit: "liter",
+            type: "IN",
+            quantity: 30,
+            date: dateOffset(-120),
+            notes: "Pembelian stok"
+        },
+        {
+            id: makeId(),
+            name: "Cawan Kertas",
+            category: "Pembungkusan",
+            unit: "unit",
+            type: "IN",
+            quantity: 200,
+            date: dateOffset(-75),
+            notes: "Stok pembungkusan"
+        },
+        {
+            id: makeId(),
+            name: "Biji Kopi Arabica",
+            category: "Bahan Mentah",
+            unit: "kg",
+            type: "OUT",
+            quantity: 5,
+            date: dateOffset(-50),
+            notes: "Penggunaan operasi"
+        },
+        {
+            id: makeId(),
+            name: "Susu Segar",
+            category: "Dairy",
+            unit: "liter",
+            type: "OUT",
+            quantity: 8,
+            date: dateOffset(-20),
+            notes: "Penyediaan minuman"
+        },
+        {
+            id: makeId(),
+            name: "Biji Kopi Arabica",
+            category: "Bahan Mentah",
+            unit: "kg",
+            type: "IN",
+            quantity: 12,
+            date: dateOffset(-5),
+            notes: "Pembelian daripada pembekal"
+        },
+        {
+            id: makeId(),
+            name: "Cawan Kertas",
+            category: "Pembungkusan",
+            unit: "unit",
+            type: "OUT",
+            quantity: 35,
+            date: dateOffset(-2),
+            notes: "Penggunaan harian"
+        }
+    ];
+
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sample));
+    } catch (error) {
+        console.error("Data contoh tidak dapat disimpan:", error);
+    }
+
+    return sample;
+}
+
+function saveInventory() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(inventory));
+        return true;
+    } catch (error) {
+        console.error("Gagal menyimpan data:", error);
+        alert(
+            "Data tidak dapat disimpan dalam pelayar. " +
+            "Semak ruang storan atau tetapan privasi pelayar."
+        );
+        return false;
+    }
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+}
+
+function formatQuantity(value) {
+    return Number(value).toLocaleString("ms-MY", {
+        maximumFractionDigits: 2
+    });
+}
+
+function formatDate(dateString) {
+    if (!dateString) return "-";
+
+    const parts = dateString.split("-");
+
+    if (parts.length !== 3) return dateString;
+
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+}
+
+function getProductKey(item) {
+    return item.name.trim().toLocaleLowerCase("ms-MY");
+}
+
+function getProducts() {
+    const map = new Map();
+
+    inventory.forEach(item => {
+        const key = getProductKey(item);
+
+        if (!map.has(key)) {
+            map.set(key, {
+                name: item.name,
+                category: item.category,
+                unit: item.unit,
+                incoming: 0,
+                outgoing: 0,
+                balance: 0
+            });
+        }
+
+        const product = map.get(key);
+
+        if (item.type === "IN") {
+            product.incoming += Number(item.quantity);
+        } else {
+            product.outgoing += Number(item.quantity);
+        }
+
+        product.balance = product.incoming - product.outgoing;
+    });
+
+    return Array.from(map.values());
+}
+
+function totalQuantity(type) {
+    return inventory
+        .filter(item => item.type === type)
+        .reduce((sum, item) => sum + Number(item.quantity), 0);
+}
+
+function sortedRecords(records) {
+    return [...records].sort((a, b) => {
+        const dateCompare = String(b.date).localeCompare(String(a.date));
+
+        if (dateCompare !== 0) return dateCompare;
+
+        return String(b.id).localeCompare(String(a.id));
+    });
+}
+
+function showView(view) {
+    if (!viewNames[view]) return;
+
+    currentView = view;
+
+    const sections = {
+        dashboard: "dashboardSection",
+        entry: "entrySection",
+        stockIn: "stockInSection",
+        stockOut: "stockOutSection",
+        report: "reportSection"
+    };
+
+    Object.entries(sections).forEach(([key, sectionId]) => {
+        $(sectionId).classList.toggle("section-hidden", key !== view);
+    });
+
+    document.querySelectorAll(".nav-button").forEach(button => {
+        button.classList.toggle("active", button.dataset.view === view);
+    });
+
+    $("pageTitle").textContent = viewNames[view][0];
+    $("pageSubtitle").textContent = viewNames[view][1];
+
+    if (view === "report") {
+        renderAll();
+    }
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.querySelectorAll(".nav-button").forEach(button => {
+    button.addEventListener("click", () => {
+        showView(button.dataset.view);
+    });
+});
+
+$("topAddButton").addEventListener("click", () => {
+    showView("entry");
+});
+
+$("viewAllButton").addEventListener("click", () => {
+    showView("stockIn");
+});
+
+$("todayDate").textContent = new Intl.DateTimeFormat("ms-MY", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+}).format(new Date());
+
+$("movementDate").value = todayISO();
+
+/* RENDER DASHBOARD */
+
+function renderSummary() {
+    const products = getProducts();
+
+    $("totalIn").textContent = formatQuantity(totalQuantity("IN"));
+    $("totalOut").textContent = formatQuantity(totalQuantity("OUT"));
+    $("totalItems").textContent = products.length;
+
+    const categories = new Set(
+        inventory
+            .filter(item => item.type === "IN")
+            .map(item => item.category)
+    );
+
+    $("totalCategories").textContent = categories.size;
+
+    $("reportIn").textContent = formatQuantity(totalQuantity("IN"));
+    $("reportOut").textContent = formatQuantity(totalQuantity("OUT"));
+    $("reportCount").textContent = inventory.length;
+    $("reportItems").textContent = products.length;
+}
+
+function renderCategoryList() {
+    const totals = new Map();
+
+    inventory
+        .filter(item => item.type === "IN")
+        .forEach(item => {
+            const category = item.category || "Lain-lain";
+
+            totals.set(
+                category,
+                (totals.get(category) || 0) + Number(item.quantity)
+            );
+        });
+
+    const categories = Array.from(totals.entries())
+        .sort((a, b) => b[1] - a[1]);
+
+    const container = $("categoryList");
+
+    if (categories.length === 0) {
+        container.innerHTML =
+            '<p class="category-empty">Belum ada rekod stok masuk. ' +
+            'Tambah rekod untuk melihat kategori di sini.</p>';
+        return;
+    }
+
+    const max = Math.max(...categories.map(item => item[1]), 1);
+
+    container.innerHTML = categories.map(([name, quantity]) => {
+        const percentage = Math.min(100, quantity / max * 100);
+
+        return `
+            <div>
+                <div class="category-row">
+                    <span class="category-name">${escapeHTML(name)}</span>
+                    <span class="category-quantity">
+                        ${formatQuantity(quantity)}
+                    </span>
+                </div>
+
+                <div class="progress-track">
+                    <div
+                        class="progress-fill"
+                        style="width:${percentage}%">
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+function renderTable(targetId, records, mode) {
+    const tbody = $(targetId);
+
+    if (!records.length) {
+        const columnCount = mode === "report" ? 7 :
+            mode === "recent" ? 6 : 6;
+
+        tbody.innerHTML = `
+            <tr>
+                <td class="empty-cell" colspan="${columnCount}">
+                    Tiada rekod untuk dipaparkan.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = records.map(item => {
+        const typeLabel = item.type === "IN" ? "Stok Masuk" : "Stok Keluar";
+        const badgeClass = item.type === "IN" ? "badge-in" : "badge-out";
+
+        const common = `
+            <td>${escapeHTML(formatDate(item.date))}</td>
+            <td>${escapeHTML(item.name)}</td>
+            <td>${escapeHTML(item.category)}</td>
+        `;
+
+        if (mode === "recent") {
+            return `
+                <tr>
+                    ${common}
+                    <td><span class="badge ${badgeClass}">${typeLabel}</span></td>
+                    <td>${formatQuantity(item.quantity)} ${escapeHTML(item.unit)}</td>
+                    <td>${escapeHTML(item.notes || "-")}</td>
+                </tr>
+            `;
+        }
+
+        if (mode === "report") {
+            return `
+                <tr>
+                    ${common}
+                    <td><span class="badge ${badgeClass}">${typeLabel}</span></td>
+                    <td>${formatQuantity(item.quantity)}</td>
+                    <td>${escapeHTML(item.unit)}</td>
+                    <td>${escapeHTML(item.notes || "-")}</td>
+                </tr>
+            `;
+        }
+
+        return `
+            <tr>
+                ${common}
+                <td>${formatQuantity(item.quantity)}</td>
+                <td>${escapeHTML(item.unit)}</td>
+                <td>${escapeHTML(item.notes || "-")}</td>
+            </tr>
+        `;
+    }).join("");
+}
+
+function renderMovementTables() {
+    const records = sortedRecords(inventory);
+    const incoming = records.filter(item => item.type === "IN");
+    const outgoing = records.filter(item => item.type === "OUT");
+
+    renderTable("recentTable", records.slice(0, 6), "recent");
+    renderTable("stockInTable", filterRecords(incoming, $("searchIn").value), "movement");
+    renderTable("stockOutTable", filterRecords(outgoing, $("searchOut").value), "movement");
+    renderTable("reportTable", records, "report");
+}
+
+function filterRecords(records, query) {
+    const normalized = String(query || "").trim().toLocaleLowerCase("ms-MY");
+
+    if (!normalized) return records;
+
+    return records.filter(item => {
+        return [
+            item.name,
+            item.category,
+            item.notes,
+            item.unit,
+            item.date
+        ].some(value =>
+            String(value || "").toLocaleLowerCase("ms-MY").includes(normalized)
+        );
+    });
+}
+
+/* GRAF BAR BULANAN */
+
+function getMonthSeries() {
+    const result = [];
+    const now = new Date();
+
+    for (let i = 5; i >= 0; i--) {
+        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+
+        result.push({
+            year: date.getFullYear(),
+            month: date.getMonth(),
+            label: new Intl.DateTimeFormat("ms-MY", {
+                month: "short"
+            }).format(date),
+            incoming: 0,
+            outgoing: 0
+        });
+    }
+
+    inventory.forEach(item => {
+        const parts = String(item.date).split("-").map(Number);
+
+        if (parts.length !== 3 || parts.some(n => !Number.isFinite(n))) {
+            return;
+        }
+
+        const year = parts[0];
+        const month = parts[1] - 1;
+
+        const target = result.find(entry =>
+            entry.year === year && entry.month === month
+        );
+
+        if (!target) return;
+
+        if (item.type === "IN") {
+            target.incoming += Number(item.quantity);
+        } else {
+            target.outgoing += Number(item.quantity);
+        }
+    });
+
+    return result;
+}
+
+function drawChart() {
+    const canvas = $("stockChart");
+    const rect = canvas.getBoundingClientRect();
+
+    if (!rect.width || !rect.height) return;
+
+    const ctx = canvas.getContext("2d");
+    const ratio = window.devicePixelRatio || 1;
+
+    canvas.width = Math.round(rect.width * ratio);
+    canvas.height = Math.round(rect.height * ratio);
+
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+    const width = rect.width;
+    const height = rect.height;
+
+    ctx.clearRect(0, 0, width, height);
+
+    const series = getMonthSeries();
+    const maximum = Math.max(
+        1,
+        ...series.flatMap(item => [item.incoming, item.outgoing])
+    );
+
+    const left = 38;
+    const right = 10;
+    const top = 18;
+    const bottom = 34;
+
+    const plotWidth = width - left - right;
+    const plotHeight = height - top - bottom;
+
+    ctx.font = "11px Arial";
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "right";
+
+    // Garisan grid dan label paksi Y.
+    for (let i = 0; i <= 4; i++) {
+        const value = maximum * i / 4;
+        const y = top + plotHeight - plotHeight * i / 4;
+
+        ctx.beginPath();
+        ctx.strokeStyle = "#e8edf5";
+        ctx.lineWidth = 1;
+        ctx.moveTo(left, y);
+        ctx.lineTo(width - right, y);
+        ctx.stroke();
+
+        ctx.fillStyle = "#64748b";
+        ctx.fillText(formatQuantity(value), left - 7, y);
+    }
+
+    const groupWidth = plotWidth / series.length;
+    const barWidth = Math.min(19, groupWidth * 0.27);
+
+    series.forEach((item, index) => {
+        const centerX = left + groupWidth * (index + 0.5);
+
+        const incomingHeight = item.incoming / maximum * plotHeight;
+        const outgoingHeight = item.outgoing / maximum * plotHeight;
+
+        ctx.fillStyle = "#2563eb";
+        ctx.fillRect(
+            centerX - barWidth - 2,
+            top + plotHeight - incomingHeight,
+            barWidth,
+            incomingHeight
+        );
+
+        ctx.fillStyle = "#f97316";
+        ctx.fillRect(
+            centerX + 2,
+            top + plotHeight - outgoingHeight,
+            barWidth,
+            outgoingHeight
+        );
+
+        ctx.fillStyle = "#64748b";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillText(item.label, centerX, top + plotHeight + 9);
+    });
+}
+
+/* TAMBAH REKOD */
+
+$("stockForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const name = $("productName").value.trim();
+    const category = $("category").value;
+    const type = $("movementType").value;
+    const quantity = Number($("quantity").value);
+    const unit = $("unit").value;
+    const date = $("movementDate").value;
+    const notes = $("notes").value.trim();
+
+    if (!name || !category || !unit || !date) {
+        showMessage("Sila lengkapkan semua maklumat wajib.", "error");
+        return;
+    }
+
+    if (!Number.isFinite(quantity) || quantity <= 0 || quantity > 1000000000) {
+        showMessage("Kuantiti mestilah lebih daripada sifar dan dalam had yang dibenarkan.", "error");
+        return;
+    }
+
+    if (!["IN", "OUT"].includes(type)) {
+        showMessage("Jenis pergerakan tidak sah.", "error");
+        return;
+    }
+
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+        new Date(date + "T00:00:00").toString() === "Invalid Date") {
+        showMessage("Sila masukkan tarikh yang sah.", "error");
+        return;
+    }
+
+    const key = name.toLocaleLowerCase("ms-MY");
+
+    // Dalam prototaip ini, nama barang menentukan identiti barang.
+    // Unit mesti konsisten untuk nama barang yang sama.
+    const existingProduct = getProducts().find(product =>
+        product.name.toLocaleLowerCase("ms-MY") === key
+    );
+
+    if (existingProduct && existingProduct.unit !== unit) {
+        showMessage(
+            `Barang ini menggunakan unit "${existingProduct.unit}". ` +
+            "Gunakan unit yang sama untuk mengelakkan pengiraan bercampur.",
+            "error"
+        );
+        return;
+    }
+
+    const balance = existingProduct ? existingProduct.balance : 0;
+
+    if (type === "OUT" && quantity > balance) {
+        showMessage(
+            `Stok tidak mencukupi. Baki semasa ialah ${formatQuantity(balance)} ${unit}.`,
+            "error"
+        );
+        return;
+    }
+
+    const record = {
+        id: makeId(),
+        name,
+        category,
+        unit,
+        type,
+        quantity,
+        date,
+        notes
+    };
+
+    inventory.push(record);
+
+    if (!saveInventory()) {
+        inventory.pop();
+        return;
+    }
+
+    renderAll();
+
+    $("stockForm").reset();
+    $("movementDate").value = todayISO();
+    $("movementType").value = "IN";
+
+    showMessage(
+        `Rekod ${type === "IN" ? "stok masuk" : "stok keluar"} berjaya disimpan.`,
+        "success"
+    );
+});
+
+function showMessage(text, type) {
+    const message = $("formMessage");
+
+    message.textContent = text;
+    message.className = "message " +
+        (type === "success" ? "message-success" : "message-error");
+}
+
+/* CARIAN */
+
+$("searchIn").addEventListener("input", () => {
+    renderMovementTables();
+});
+
+$("searchOut").addEventListener("input", () => {
+    renderMovementTables();
+});
+
+/* LAPORAN */
+
+$("printReport").addEventListener("click", () => {
+    renderAll();
+    window.print();
+});
+
+$("exportCsv").addEventListener("click", () => {
+    const rows = [
+        ["Tarikh", "Nama Barang", "Kategori", "Jenis", "Kuantiti", "Unit", "Catatan"],
+        ...sortedRecords(inventory).map(item => [
+            item.date,
+            item.name,
+            item.category,
+            item.type === "IN" ? "Stok Masuk" : "Stok Keluar",
+            item.quantity,
+            item.unit,
+            item.notes || ""
+        ])
+    ];
+
+    const csv = rows.map(row =>
+        row.map(value =>
+            '"' + String(value ?? "").replace(/"/g, '""') + '"'
+        ).join(",")
+    ).join("\r\n");
+
+    const blob = new Blob(
+        ["\uFEFF" + csv],
+        { type: "text/csv;charset=utf-8;" }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "laporan-inventori-kafe.csv";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+});
+
+/* PAPAR SEMUA DATA */
+
+function renderAll() {
+    renderSummary();
+    renderCategoryList();
+    renderMovementTables();
+
+    if (currentView === "dashboard") {
+        requestAnimationFrame(drawChart);
+    }
+}
+
+let resizeTimer;
+
+window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+
+    resizeTimer = setTimeout(() => {
+        if (currentView === "dashboard") {
+            drawChart();
+        }
+    }, 100);
+});
+
+window.addEventListener("beforeprint", () => {
+    drawChart();
+});
+
+renderAll();
+
+</script>
+</body>
+</html>
